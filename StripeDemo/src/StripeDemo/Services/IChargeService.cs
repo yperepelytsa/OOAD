@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using StripeDemo.Models;
 namespace StripeDemo.Services
 {
-    interface IChargeService
+    public interface IChargeService
     {
-         Invoice executeOrder(Order o);
+        Task<Invoice> executeOrder(OrderDTO order, string stripeClientId);
     }
 }

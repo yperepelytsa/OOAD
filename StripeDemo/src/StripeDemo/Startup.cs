@@ -4,9 +4,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Stripe;
+using StripeDemo.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using StripeDemo.Data;
+using Microsoft.AspNetCore.Http;
+using StripeDemo.Services;
 
 namespace StripeDemo
 {
@@ -33,6 +40,22 @@ namespace StripeDemo
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddIdentity<ApplicationUser, IdentityRole>().
+            AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
+            services.AddSession(session =>
+            {
+                session.IdleTimeout = TimeSpan.FromMinutes(120);
+            });
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Cookies.ApplicationCookie.LoginPath = new PathString("/account/login");
+                options.Cookies.ApplicationCookie.LogoutPath = new PathString("/account/logout");
+            });
+            services.AddAuthorization();
+            services.AddSingleton<IDbInitializer, DbInitializer>();
+            services.AddSingleton<IChargeService, ChargeService>();
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite("Filename=demo.db"));
             // Add framework services.
             services.AddApplicationInsightsTelemetry(Configuration);
 
@@ -44,9 +67,10 @@ namespace StripeDemo
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
-
+            StripeConfiguration.SetApiKey("sk_test_tZHt93U0YFMoTueSbZUgCC8q");
             app.UseApplicationInsightsRequestTelemetry();
-
+            app.UseSession();
+            app.UseCookieAuthentication();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -58,15 +82,17 @@ namespace StripeDemo
             }
 
             app.UseApplicationInsightsExceptionTelemetry();
-
+            app.UseIdentity();
             app.UseStaticFiles();
-
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Home}/{action=Index}");
             });
+
+            IDbInitializer databaseInitializer = app.ApplicationServices.GetService<IDbInitializer>();
+            databaseInitializer.SeedData();
         }
     }
 }
