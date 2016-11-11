@@ -173,6 +173,112 @@ namespace StripeDemo.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("StripeDemo.Models.Invoice", b =>
+                {
+                    b.Property<int>("InvoiceId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("SubmittedOn");
+
+                    b.Property<string>("SubmitterUserName");
+
+                    b.Property<int>("TotalItems");
+
+                    b.Property<int>("TotalSum");
+
+                    b.HasKey("InvoiceId");
+
+                    b.ToTable("Invoices");
+                });
+
+            modelBuilder.Entity("StripeDemo.Models.InvoiceItem", b =>
+                {
+                    b.Property<int>("InvoiceItemId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("InvoiceId");
+
+                    b.Property<int>("Number");
+
+                    b.Property<int>("Price");
+
+                    b.Property<string>("ProductName");
+
+                    b.HasKey("InvoiceItemId");
+
+                    b.HasIndex("InvoiceId");
+
+                    b.ToTable("InvoiceItems");
+                });
+
+            modelBuilder.Entity("StripeDemo.Models.Order", b =>
+                {
+                    b.Property<int>("OrderId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("Executed");
+
+                    b.Property<DateTime>("SubmittedOn");
+
+                    b.Property<string>("SubmitterUserName");
+
+                    b.HasKey("OrderId");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("StripeDemo.Models.OrderItem", b =>
+                {
+                    b.Property<int>("OrderItemId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("Amount");
+
+                    b.Property<int?>("OrderId");
+
+                    b.Property<int>("ProductId");
+
+                    b.HasKey("OrderItemId");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("OrderItems");
+                });
+
+            modelBuilder.Entity("StripeDemo.Models.Payment", b =>
+                {
+                    b.Property<int>("PaymentId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("ChargeToken");
+
+                    b.Property<int>("OrderId");
+
+                    b.HasKey("PaymentId");
+
+                    b.ToTable("Payments");
+                });
+
+            modelBuilder.Entity("StripeDemo.Models.Product", b =>
+                {
+                    b.Property<int>("ProductId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Description");
+
+                    b.Property<int>("LeftInStock");
+
+                    b.Property<string>("Name");
+
+                    b.Property<int>("Price");
+
+                    b.Property<string>("Vendor");
+
+                    b.HasKey("ProductId");
+
+                    b.ToTable("Products");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole")
@@ -208,6 +314,21 @@ namespace StripeDemo.Migrations
                         .WithMany("Roles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("StripeDemo.Models.InvoiceItem", b =>
+                {
+                    b.HasOne("StripeDemo.Models.Invoice", "Invoice")
+                        .WithMany("Items")
+                        .HasForeignKey("InvoiceId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("StripeDemo.Models.OrderItem", b =>
+                {
+                    b.HasOne("StripeDemo.Models.Order")
+                        .WithMany("Items")
+                        .HasForeignKey("OrderId");
                 });
         }
     }

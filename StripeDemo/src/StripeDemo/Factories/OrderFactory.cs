@@ -8,10 +8,15 @@ namespace StripeDemo.Factories
 {
     public class OrderFactory
     {
-        public static Order Create(OrderDTO data)
+        public OrderFactory() { }
+        public  Order Create(OrderDTO data, string UserName)
         {
-
-            return null;
+            Order order = new Order(){
+                SubmittedOn = DateTime.Now,
+                SubmitterUserName = UserName,
+                Items = data.Items
+            };
+            return order;
         }
     }
 }

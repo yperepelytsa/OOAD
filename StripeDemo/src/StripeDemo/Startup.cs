@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using StripeDemo.Data;
 using Microsoft.AspNetCore.Http;
 using StripeDemo.Services;
+using StripeDemo.Factories;
+using StripeDemo.Repositories;
 
 namespace StripeDemo
 {
@@ -54,7 +56,15 @@ namespace StripeDemo
             });
             services.AddAuthorization();
             services.AddSingleton<IDbInitializer, DbInitializer>();
-            services.AddSingleton<IChargeService, ChargeService>();
+            services.AddSingleton<IOrderService, OrderService>();
+            services.AddSingleton<IStripeApiService, StripeApiService>();
+            services.AddScoped<OrderFactory>();
+            services.AddScoped<InvoiceFactory>();
+            services.AddScoped<PaymentFactory>();
+            services.AddScoped<IInvoiceRepository,InvoiceRepository>();
+            services.AddScoped<IOrderRepository,OrderRepository>();
+            services.AddScoped<IPaymentRepository,PaymentRepository>();
+            services.AddScoped<IProductRepository,ProductRepository>();
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite("Filename=demo.db"));
             // Add framework services.
             services.AddApplicationInsightsTelemetry(Configuration);

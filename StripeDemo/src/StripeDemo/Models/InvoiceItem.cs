@@ -9,8 +9,8 @@ namespace StripeDemo.Models
     {
         public int InvoiceItemId { get; set; }
         public string ProductName { get; set; }
-        public string Price { get; set; }
-        public string Number { get; set; }
+        public int Price { get; set; }
+        public int Number { get; set; }
 
         public Invoice Invoice { get; set; }
         public int InvoiceId { get; set; }

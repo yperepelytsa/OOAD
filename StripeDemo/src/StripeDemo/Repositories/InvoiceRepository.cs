@@ -6,8 +6,17 @@ using System.Threading.Tasks;
 
 namespace StripeDemo.Repositories
 {
-    public class InvoiceRepository:IInvoiceRepository
+    public class InvoiceRepository: IInvoiceRepository
     {
-        public async void addInvoice(Invoice i) { }
+        ApplicationDbContext _context;
+        public InvoiceRepository(ApplicationDbContext context)
+        {
+            this._context = context;
+        }
+        public Invoice addInvoice(Invoice invoice) {
+            _context.Invoices.Add(invoice);
+            _context.SaveChanges();
+            return invoice;
+        }
     }
 }

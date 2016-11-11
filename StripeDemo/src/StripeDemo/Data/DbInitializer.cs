@@ -45,6 +45,35 @@ namespace StripeDemo.Data
             userManager.CreateAsync(user).GetAwaiter().GetResult();
             userManager.AddPasswordAsync(user, "Password_1").GetAwaiter().GetResult();
         }
+            if (!context.Products.Any())
+            {
+                context.Add(new Product
+                {
+                   LeftInStock=1000,
+                   Name="Apple",
+                   Price=10,
+                   Description="Fruit",
+                   Vendor="abcd"
+                });
+                context.Add(new Product
+                {
+                    LeftInStock = 10,
+                    Name = "Vehicle",
+                    Price = 200000,
+                    Description = "M1 Abrams",
+                    Vendor = "unknown"
+                });
+                context.Add(new Product
+                {
+                    LeftInStock = 0,
+                    Name = "Snickers",
+                    Price = 15,
+                    Description = "Food",
+                    Vendor = "Roshen"
+                });
+                context.SaveChanges();
+            }
+
         }
 
     }

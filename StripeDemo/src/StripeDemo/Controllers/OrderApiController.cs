@@ -13,17 +13,17 @@ namespace StripeDemo.Controllers
     public class OrderApiController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IChargeService _chargeService;
-        public OrderApiController(UserManager<ApplicationUser> userManager, IChargeService chargeService)
+        private readonly IOrderService _orderService;
+        public OrderApiController(UserManager<ApplicationUser> userManager, IOrderService orderService)
         {
             _userManager = userManager;
-            _chargeService = chargeService;
+            _orderService = orderService;
         }
 
         [HttpPost]
         public async Task<IActionResult> ExecuteOrder([FromBody]OrderDTO order)
         {
-            var created = await _chargeService.executeOrder(order, _userManager.FindByNameAsync(HttpContext.User.Identity.Name).GetAwaiter().GetResult().StripeClientId);
+            var created = _orderService.executeOrder(order, HttpContext.User.Identity.Name, _userManager.FindByNameAsync(HttpContext.User.Identity.Name).GetAwaiter().GetResult().StripeClientId);
             //created at route
             return new NoContentResult();
         }

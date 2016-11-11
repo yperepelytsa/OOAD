@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using StripeDemo.Models;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace StripeDemo.Models
+namespace StripeDemo.Repositories
 {
-    public class OrderDTO 
+    public interface IOrderRepository 
     {
-      public List<OrderItem> Items { get; set; }  
+        Order addOrder(Order o);
+        void SetExecuted(Order order);
+        bool CheckOrder(Order order);
     }
 }

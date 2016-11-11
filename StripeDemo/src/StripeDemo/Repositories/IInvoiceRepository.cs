@@ -8,6 +8,6 @@ namespace StripeDemo.Repositories
 {
     public interface IInvoiceRepository
     {
-        void addInvoice(Invoice i);
+        Invoice addInvoice(Invoice i);
     }
 }
